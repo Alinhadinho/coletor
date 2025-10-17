@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leitor de Código</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <style>
+        body, html { margin: 0; padding: 0; overflow: hidden; background-color: #000; }
+        #video-container { position: relative; width: 100vw; height: 100vh; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        #feedback-box {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 30%;
+            border: 2px solid rgba(255, 0, 0, 0.7);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        canvas { display: none; } /* O canvas é usado para processamento, não precisa ser visível */
+    </style>
+</head>
+<body>
+    <div id="video-container">
+        <video id="video" playsinline autoplay muted></video>
+        <div id="feedback-box"></div>
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        const video = document.getElementById("video");
+        const canvasElement = document.getElementById("canvas");
+        const canvas = canvasElement.getContext("2d");
+        let stream;
+
+        // Função para iniciar a câmera
+        async function startCamera() {
+            try {
+                // Pede acesso à câmera traseira (environment)
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: "environment" }
+                });
+                video.srcObject = stream;
+                video.onloadedmetadata = () => {
+                    canvasElement.width = video.videoWidth;
+                    canvasElement.height = video.videoHeight;
+                    video.play();
+                    // Inicia o loop de leitura
+                    requestAnimationFrame(tick);
+                };
+            } catch (err) {
+                console.error("Erro ao acessar a câmera:", err);
+                if (window.flet) {
+                    // Envia uma mensagem de erro de volta para o Flet
+                    window.flet.sendMessage("CAMERA_ERROR");
+                }
+            }
+        }
+
+        // Loop de leitura frame a frame
+        function tick() {
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                // Desenha o frame do vídeo no canvas
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                // Extrai os dados da imagem do canvas
+                const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                // Tenta decodificar o código usando jsQR
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                });
+
+                if (code) {
+                    // CÓDIGO ENCONTRADO!
+                    console.log("Código encontrado:", code.data);
+                    
+                    // Envia o código para o Flet
+                    if (window.flet) {
+                        window.flet.sendMessage(code.data);
+                    }
+                    
+                    // Para a câmera para economizar bateria
+                    stopCamera();
+                    return; // Sai do loop
+                }
+            }
+            // Continua o loop
+            requestAnimationFrame(tick);
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        // Inicia todo o processo
+        startCamera();
+    </script>
+</body>
+</html>
