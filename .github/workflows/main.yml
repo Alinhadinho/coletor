@@ -1,0 +1,51 @@
+name: CI/CD Docker Build and Push
+
+on:
+  push:
+    branches:
+      - main  # Altere para 'master' se for sua branch principal
+  pull_request:
+    branches:
+      - main
+
+# Variáveis globais para o fluxo de trabalho
+env:
+  DOCKER_IMAGE_NAME: coletor-inventario  # Nome da imagem (mantenha o nome do seu projeto)
+  DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }} # Será definido como um Secret
+  REPO_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }} # Token de acesso pessoal do Docker Hub
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract Docker metadata (Tags and Labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}
+          tags: |
+            type=sha,format=short,prefix=
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and Push Docker image
+        uses: docker/build-and-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Não é necessário o --no-cache-dir, pois o pip já está no Dockerfile, 
+          # mas podemos adicionar build-args se você precisar de configurações específicas.
