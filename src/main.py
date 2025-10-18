@@ -17,7 +17,7 @@ produtos = []
 pastas = []
 shared_produtos = set()
 
-# --- Helpers ---
+# --- Helpers --
 def cor_validade(data_str: str):
     try:
         data = datetime.datetime.strptime(data_str, "%d/%m/%Y").date()
