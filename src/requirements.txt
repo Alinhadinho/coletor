@@ -1,0 +1,4 @@
+flet
+sqlalchemy
+openpyxl
+opencv-python # Mude 'cv2' para o nome do pacote PyPI
