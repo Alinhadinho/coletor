@@ -1,4 +1,3 @@
-# render.yaml
 services:
   - type: web
     name: coletor-inventario
@@ -7,5 +6,3 @@ services:
     branch: main
     autoDeploy: true
     plan: free
-    buildCommand: ""
-    startCommand: "python src/main.py"
