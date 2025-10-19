@@ -17,14 +17,16 @@ def buscar_produto_na_api(tipo: str, valor: str):
     if tipo == "EAN" and valor in DADOS_API_SIMULADOS: return DADOS_API_SIMULADOS[valor]
     return None
 
-def main(page: ft.Page): # Esta função lida com a página Flet (target)
+# ESTA É A FUNÇÃO PRINCIPAL QUE RECEBE O OBJETO ft.Page
+# O Uvicorn a chama indiretamente via o wrapper asgi_app abaixo.
+def main(page: ft.Page): 
     page.title = "Coletor de Conferência"
     page.window.height = 800
     page.window.width = 400
     page.theme_mode = ft.ThemeMode.LIGHT
     page.bgcolor = CORES["background"]
 
-    # init_db() # REMOVIDO: Agora é chamado apenas em run.py para o setup inicial.
+    # init_db() # REMOVIDO: A chamada agora está no src/main.py (antigo run.py) para o setup.
 
     # (Variáveis de estado)
     selected_products = {}
@@ -101,10 +103,6 @@ def main(page: ft.Page): # Esta função lida com a página Flet (target)
     def show_opencv_scanner(pasta_id_forced=None):
         def run_scanner_and_get_code():
             # AVISO: cv2.VideoCapture(0) e cv2.imshow não funcionam no Render/Nuvem!
-            # Essa parte do código só é funcional em desktop.
-            # (A implementação real do scanner deve ser adaptada ou removida para a nuvem)
-            
-            # Código de placeholder para rodar no contêiner
             print("AVISO: OpenCV Scanner iniciado (Modo placeholder no Render)")
             return None 
 
@@ -651,9 +649,8 @@ def main(page: ft.Page): # Esta função lida com a página Flet (target)
 # === NOVO PONTO DE ENTRADA ASGI PARA UVICORN (FINAL) ===
 # =========================================================
 
-# Esta função é o que o Uvicorn (ASGI) vai buscar (app.main:main)
-# O Uvicorn chama esta função com o 'scope' (o dicionário), e ela retorna 
-# o aplicativo Flet, passando page_handler como alvo.
+# Esta função é o que o Uvicorn (ASGI) vai buscar (app.main:asgi_app)
+# Ela retorna o aplicativo Flet, passando 'main' como target.
 def asgi_app(scope):
     # ft.WEB_BROWSER é o modo de produção ideal para o Render.
     return ft.app(target=main, view=ft.WEB_BROWSER, assets_dir="assets")
