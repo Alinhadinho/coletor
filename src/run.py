@@ -1,8 +1,9 @@
-import flet as ft # Mantemos o import, mas não o usamos para iniciar o app
-from app.main import main # Mantemos o import
+# run.py (versão final para produção)
+import flet as ft 
+from app.main import main
 import os
 from openpyxl import Workbook
-from app.models import init_db # Importar init_db para garantir a criação do DB antes do app
+from app.models import init_db # Importado para garantir a criação do DB
 
 # Caminho para o template do inventário na pasta de dados
 INVENTARIO_TEMPLATE_PATH = os.path.join("data", "inventario_principal.xlsx")
