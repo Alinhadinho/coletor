@@ -1,4 +1,4 @@
-# Dockerfile (VERSÃO DEFINITIVA)
+# Dockerfile (VERSÃO DEFINITIVA COM AJUSTE DO NOME DO ARQUIVO)
 
 # 1. Imagem base
 FROM python:3.11-slim
@@ -6,13 +6,11 @@ FROM python:3.11-slim
 # 2. Configuração do ambiente
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-# CRUCIAL: Força o Flet a rodar em modo Headless (sem GUI)
 ENV FLET_DISPLAY false 
 ENV APP_HOME /app
 WORKDIR $APP_HOME
 
 # 3. Instalar dependências nativas (apenas o essencial para Slim/OpenCV)
-# Essas libs são mantidas para o OpenCV e para a base gráfica mínima que o Flutter requer.
 RUN apt-get update && apt-get install -y \
     build-essential \
     libglib2.0-0 \
@@ -25,13 +23,12 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 5. Copiar o código do aplicativo
-# CORREÇÃO: Copia o CONTEÚDO da pasta local 'src/' para o WORKDIR '/app'
+# Copia o CONTEÚDO da pasta local 'src/' para o WORKDIR '/app'
 COPY src/ .
 
 # 6. Expor a porta.
 EXPOSE 8550
 
 # 7. Comando de inicialização (FINAL E ESTÁVEL)
-# Executa o setup (python run.py) e, em seguida, inicia o servidor Uvicorn na porta dinâmica $PORT.
-CMD ["/bin/bash", "-c", "python run.py && python -m uvicorn app.main:main --host 0.0.0.0 --port $PORT"]
-
+# EXECUTA O SETUP USANDO O NOVO NOME: 'python main.py'
+CMD ["/bin/bash", "-c", "python main.py && python -m uvicorn app.main:main --host 0.0.0.0 --port $PORT"]
