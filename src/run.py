@@ -1,8 +1,9 @@
+# src/run.py (VERSÃO FINAL)
 import flet as ft 
 from app.main import main
 import os
 from openpyxl import Workbook
-from app.models import init_db # <-- Adicionado para inicializar o DB
+from app.models import init_db # Importado para garantir a criação do DB
 
 # Caminho para o template do inventário na pasta de dados
 INVENTARIO_TEMPLATE_PATH = os.path.join("data", "inventario_principal.xlsx")
@@ -21,8 +22,9 @@ def setup_initial_files():
             # Adiciona o cabeçalho inicial
             ws = wb.active
             ws.title = "Planilha1"
-            ws.append(["Datas", "", "", ""]) 
-            ws.append(["Código", "Produto", "Data", "Quantidade"]) 
+            ws.append(["Datas", "", "", ""]) # Linha 1
+            ws.append(["Código", "Produto", "Data", "Quantidade"]) # Linha 2
+            
             wb.save(INVENTARIO_TEMPLATE_PATH)
             print(f"Arquivo '{INVENTARIO_TEMPLATE_PATH}' criado com sucesso.")
         except Exception as e:
@@ -30,5 +32,5 @@ def setup_initial_files():
 
 if __name__ == "__main__":
     setup_initial_files()
-    # ft.app(target=main, assets_dir="assets") <-- ESTA LINHA FOI REMOVIDA
+    # ft.app(...) FOI REMOVIDA para evitar o erro de GTK.
     print("Setup de pastas, template e DB concluídos.")
