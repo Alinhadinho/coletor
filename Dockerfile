@@ -29,6 +29,5 @@ COPY src/ .
 # 6. Expor a porta.
 EXPOSE 8550
 
-# 7. Comando de inicialização (FINAL E ESTÁVEL)
-# EXECUTA O SETUP USANDO O NOVO NOME: 'python main.py'
-CMD ["/bin/bash", "-c", "python main.py && python -m uvicorn app.main:main --host 0.0.0.0 --port $PORT"]
+CMD ["/bin/bash", "-c", "python main.py && python -m uvicorn app.main:asgi_app --host 0.0.0.0 --port $PORT"]
+
