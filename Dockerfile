@@ -29,7 +29,8 @@ COPY src/ .
 # 6. Expor a porta.
 EXPOSE 8550
 
-CMD ["/bin/bash", "-c", "python main.py && python -m uvicorn app.main:asgi_app --host 0.0.0.0 --port $PORT"]
+CMD ["uvicorn", "src.main:asgi_app", "--host", "0.0.0.0", "--port", "8000"]
+
 
 
 
