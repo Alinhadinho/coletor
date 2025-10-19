@@ -1,0 +1,11 @@
+# render.yaml
+services:
+  - type: web
+    name: coletor-inventario
+    env: docker
+    dockerfilePath: ./Dockerfile
+    branch: main
+    autoDeploy: true
+    plan: free
+    buildCommand: ""
+    startCommand: "python src/main.py"
