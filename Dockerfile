@@ -27,9 +27,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ .
 
 # 6. Expor a porta.
-EXPOSE 8550
+EXPOSE 8000
 
 CMD ["uvicorn", "src.main:asgi_app", "--host", "0.0.0.0", "--port", "8000"]
+
 
 
 
