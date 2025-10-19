@@ -17,7 +17,7 @@ def buscar_produto_na_api(tipo: str, valor: str):
     if tipo == "EAN" and valor in DADOS_API_SIMULADOS: return DADOS_API_SIMULADOS[valor]
     return None
 
-def page_handler(page: ft.Page): # Esta função lida com a página Flet (target)
+def main(page: ft.Page): # Esta função lida com a página Flet (target)
     page.title = "Coletor de Conferência"
     page.window.height = 800
     page.window.width = 400
@@ -654,6 +654,6 @@ def page_handler(page: ft.Page): # Esta função lida com a página Flet (target
 # Esta função é o que o Uvicorn (ASGI) vai buscar (app.main:main)
 # O Uvicorn chama esta função com o 'scope' (o dicionário), e ela retorna 
 # o aplicativo Flet, passando page_handler como alvo.
-def main(scope): 
+def asgi_app(scope):
     # ft.WEB_BROWSER é o modo de produção ideal para o Render.
     return ft.app(target=page_handler, view=ft.WEB_BROWSER, assets_dir="assets")
