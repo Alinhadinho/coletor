@@ -656,4 +656,4 @@ def main(page: ft.Page): # Esta função lida com a página Flet (target)
 # o aplicativo Flet, passando page_handler como alvo.
 def asgi_app(scope):
     # ft.WEB_BROWSER é o modo de produção ideal para o Render.
-    return ft.app(target=page_handler, view=ft.WEB_BROWSER, assets_dir="assets")
+    return ft.app(target=main, view=ft.WEB_BROWSER, assets_dir="assets")
