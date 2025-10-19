@@ -651,6 +651,9 @@ def main(page: ft.Page):
 
 # Esta função é o que o Uvicorn (ASGI) vai buscar (app.main:asgi_app)
 # Ela retorna o aplicativo Flet, passando 'main' como target.
-def asgi_app(scope):
-    return ft.app(target=main, view=None, assets_dir="assets")
+asgi_app = ft.app(
+    target=main, 
+    view=None, 
+    assets_dir="assets"
+)
     
