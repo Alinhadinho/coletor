@@ -653,7 +653,6 @@ def main(page: ft.Page):
 # Ela retorna o aplicativo Flet, passando 'main' como target.
 asgi_app = ft.app(
     target=main, 
-    view=None, 
+    # view=None,  <-- REMOVA ESTA LINHA
     assets_dir="assets"
 )
-    
