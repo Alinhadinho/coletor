@@ -2,7 +2,7 @@
 
 # 1. Imagem base
 FROM python:3.11-slim
-
+LABEL build_version="1.0.3-final-asgi-fix"
 # 2. Configuração do ambiente
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -30,4 +30,5 @@ COPY src/ .
 EXPOSE 8550
 
 CMD ["/bin/bash", "-c", "python main.py && python -m uvicorn app.main:asgi_app --host 0.0.0.0 --port $PORT"]
+
 
