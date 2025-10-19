@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 🏠 Set working directory
-WORKDIR /app
+WORKDIR /src
 
 # 📦 Copy dependency file first (for caching)
 COPY requirements.txt .
@@ -36,3 +36,4 @@ EXPOSE 8000
 
 # 🚀 Run the app in web mode, using the correct port
 CMD ["python", "-m", "flet", "run", "--web", "--port", "8000", "main.py"]
+
