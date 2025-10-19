@@ -33,4 +33,5 @@ EXPOSE 8550
 
 # 7. Comando de inicialização (FINAL E ESTÁVEL)
 # Executa o setup (python run.py) e, em seguida, inicia o servidor Uvicorn na porta dinâmica $PORT.
-CMD ["/bin/bash", "-c", "python run.py && uvicorn app.main:main --host 0.0.0.0 --port $PORT"]
+CMD ["/bin/bash", "-c", "python run.py && python -m uvicorn app.main:main --host 0.0.0.0 --port $PORT"]
+
