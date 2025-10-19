@@ -1,6 +1,6 @@
 # 1. Imagem base
 FROM python:3.11-slim
-LABEL build_version="1.0.3-final-asgi-fix"
+LABEL build_version="1.0.4-setup-init"
 
 # 2. Configuração do ambiente
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -24,8 +24,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 5. Copiar o código do aplicativo
 COPY src/ .
 
-# 6. Expor a porta usada pelo Render
+# 6. Rodar o setup inicial (gera DB e template XLSX)
+RUN python main.py
+
+# 7. Expor a porta usada pelo Render
 EXPOSE 8000
 
-# 7. Comando de inicialização
+# 8. Comando de inicialização do app
 CMD ["uvicorn", "app.main:asgi_app", "--host", "0.0.0.0", "--port", "8000"]
