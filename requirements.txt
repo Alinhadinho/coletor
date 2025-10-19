@@ -1,4 +1,6 @@
 flet
 sqlalchemy
 openpyxl
+opencv-python
+flet-webview
 opencv-python # Mude 'cv2' para o nome do pacote PyPI
