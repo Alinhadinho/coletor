@@ -17,14 +17,14 @@ def buscar_produto_na_api(tipo: str, valor: str):
     if tipo == "EAN" and valor in DADOS_API_SIMULADOS: return DADOS_API_SIMULADOS[valor]
     return None
 
-def main(page: ft.Page):
+def page_handler(page: ft.Page): # Esta função lida com a página Flet (target)
     page.title = "Coletor de Conferência"
     page.window.height = 800
     page.window.width = 400
     page.theme_mode = ft.ThemeMode.LIGHT
     page.bgcolor = CORES["background"]
 
-    init_db()
+    # init_db() # REMOVIDO: Agora é chamado apenas em run.py para o setup inicial.
 
     # (Variáveis de estado)
     selected_products = {}
@@ -100,25 +100,13 @@ def main(page: ft.Page):
     # Função para o scanner OpenCV (Desktop) - Restaurada do seu código original
     def show_opencv_scanner(pasta_id_forced=None):
         def run_scanner_and_get_code():
-            cap = cv2.VideoCapture(0)
-            if not cap.isOpened():
-                print("Erro: Não foi possível abrir a câmera.")
-                return None
-            data_found = ""
-            window_name = "LEITOR DE CODIGO DE BARRAS (Pressione 'Q' para sair)"
-            cv2.namedWindow(window_name)
-            while True:
-                ret, frame = cap.read()
-                if not ret: break
-                ok, decoded_info, _, _ = scanner.detectAndDecodeMulti(frame)
-                if ok and decoded_info and decoded_info[0]:
-                    data_found = decoded_info[0]
-                    break
-                cv2.imshow(window_name, frame)
-                if cv2.waitKey(1) & 0xFF == ord("q"): break
-            cap.release()
-            cv2.destroyAllWindows()
-            return data_found
+            # AVISO: cv2.VideoCapture(0) e cv2.imshow não funcionam no Render/Nuvem!
+            # Essa parte do código só é funcional em desktop.
+            # (A implementação real do scanner deve ser adaptada ou removida para a nuvem)
+            
+            # Código de placeholder para rodar no contêiner
+            print("AVISO: OpenCV Scanner iniciado (Modo placeholder no Render)")
+            return None 
 
         def handle_capture(e):
             codigo_lido = run_scanner_and_get_code()
@@ -655,6 +643,17 @@ def main(page: ft.Page):
         shape=ft.CircleBorder()
     )
     page.floating_action_button_location = ft.FloatingActionButtonLocation.CENTER_DOCKED
-
+    
     page.add(main_content)
     show_meus_produtos(None)
+
+# =========================================================
+# === NOVO PONTO DE ENTRADA ASGI PARA UVICORN (FINAL) ===
+# =========================================================
+
+# Esta função é o que o Uvicorn (ASGI) vai buscar (app.main:main)
+# O Uvicorn chama esta função com o 'scope' (o dicionário), e ela retorna 
+# o aplicativo Flet, passando page_handler como alvo.
+def main(scope): 
+    # ft.WEB_BROWSER é o modo de produção ideal para o Render.
+    return ft.app(target=page_handler, view=ft.WEB_BROWSER, assets_dir="assets")
